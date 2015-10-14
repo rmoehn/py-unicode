@@ -1,12 +1,14 @@
-==============================================================
-As Short as Possible Guidelines for Handling Unicode in Python
-==============================================================
+================================================================
+As Short as Possible Guidelines for Handling Unicode in Python 2
+================================================================
+
+»recommended« and »mandatory« are with regard to reading a section.
 
 Conventions (recommended)
 =========================
 
- - Write ``unicode`` or unicode if you mean the Python type.
- - Write Unicode if you mean Unicode in general.
+- Write ``unicode`` or unicode if you mean the Python type.
+- Write Unicode if you mean Unicode in general.
 
 Need to Know (mandatory)
 ========================
@@ -50,8 +52,8 @@ Rules (mandatory)
         from __future__ import unicode_literals
 
     If you don't do this, all string literals in your source code will be
-    ``str``, which is against the »every string is ``unicode``\« of the Need
-    to Know.
+    ``str``, which is against the »every string is ``unicode``\« of the `Need
+    to Know <#need-to-know-mandatory>`_.
 
 ❃ ``str`` literals
     Use ``b"bla"`` to write a ``str`` "bla".
@@ -62,18 +64,12 @@ Rules (mandatory)
 
 ❃ naming convention
     If there is a string variable that needs to be of type ``str`` inside
-    your program, prefix it with ``b_`` if you don't know the encoding or
+    your program, prefix it with ``b_`` if you don't know the encoding, or
     with ``utf8_`` if you know it is UTF-8.
 
-❃ Git SHA1s
-    Git SHA1s as returned by ``Oid.hex`` are of type ``str``. Since they never
-    contain non-ASCII characters and it would be annoying to convert them all
-    the time, we leave them as ``str``. Since we know that they are ``str``
-    and it is annoying to write prefixes, it is okay to leave off the ``b_``.
-    (Not so sure if this is good, though.)
-
 ❃ reading and writing files
-    When you want to read from or write to a file, use ``codecs.open()``::
+    When you want to read from or write to a file, use ``codecs.open()``
+    instead of the built-in ``open()``::
 
         >>> from __future__ import unicode_literals
         >>> import codecs
@@ -88,18 +84,19 @@ Rules (mandatory)
         u'\xfc\xfc\xfc'
 
 ❃ ``print``
-    Everything that is written to the outside world should be ``str``. This
-    includes parameters to ``print``. Write at the top of every file, but
-    after all imports::
+    Everything that is written to the outside world should be ``str``.
+    This normally includes parameters to ``print``. In order to avoid
+    having to convert your ``unicode``\s all the time, write at the top
+    of every file, but after all imports::
 
         if not isinstance(sys.stdout, codecs.StreamWriter):
             sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
 
-    (Don't forget to add imports for ``sys`` and ``codecs`` if they aren't
-    there already.) This way you can do ``print(unicode)``. Note however, that
-    now it's dangerous to do ``print(str)``. Never pass a ``str`` to ``print``
-    unless you're sure it contains only ASCII. In such cases, write a
-    clarifying comment.
+    (Don't forget to add imports for ``sys`` and ``codecs`` if they
+    aren't there already.) This way you can do ``print(unicode)``.
+    Note however, that now it's dangerous to do ``print(str)``. Never
+    pass a ``str`` to ``print`` unless you're sure it contains only
+    ASCII. In such cases, write a clarifying comment.
 
 ❃ exceptions and warnings
     When raising exceptions or warnings, only pass ``str``. Think twice whether
@@ -113,7 +110,7 @@ Rules (mandatory)
 ❃ external libraries
     Check whether the library calls you're using accept and return ``str`` or
     ``unicode``. If they accept and return ``str``, take care to make the
-    right conversions. Below are my `notes on which libraries do what`_.
+    right conversions. Below are `notes on which libraries do what`_.
 
 ❃ environment variables
     Use ``unicode_environ.getenv`` and ``unicode_environ.environ`` instead of
@@ -135,6 +132,21 @@ Rules (mandatory)
 ❃ CONSTANT VIGILANCE!
     When you read data from or write data to somewhere outside your program,
     make sure it gets converted to the right types.
+
+Exceptions to the rules (recommended)
+=====================================
+
+You may make project-specific exceptions to these rules if they get annoying.
+Be sure to document them.
+
+Example for a project that uses Pygit2 often:
+
+    ❃ Git SHA1s
+        Git SHA1s as returned by ``Oid.hex`` are of type ``str``. Since they never
+        contain non-ASCII characters and it would be annoying to convert them all
+        the time, we leave them as ``str``. Since we know that they are ``str``
+        and it is annoying to write prefixes, it is okay to leave off the ``b_``.
+        (Not so sure if this is good, though.)
 
 Recommendations (recommended)
 =============================
@@ -163,7 +175,7 @@ When I write something like »works with ``unicode`` arguments«, I mean that it
 works with arguments of type ``unicode`` which can contain arbitrary
 characters, i. e. ASCII as well as non-ASCII.
 
-Feel free to extend.
+Feel free to extend, or correct if things have changed.
 
 codecs
 ------
@@ -179,7 +191,7 @@ httplib2
 --------
 
 ``httplib2.Http.request`` works with ``unicode`` arguments. However, the
-results will all contain or be of type ``str``. Example:
+results will all contain or be of type ``str``. Example::
 
     >>> r, c = httplib2.Http(".cache").request("http://de.wikipedia.org/wiki/Erdkröte")
     >>> r['content-type']
@@ -194,12 +206,12 @@ os.path
 
 Things in os are generally safe to use with ``unicode``. However, note this:
 
- - ``path.join(unicode, unicode)``: ``unicode``
- - ``path.relpath(unicode, unicode)``: ``str`` or ``unicode`` (!!!)
-   If the result contains non-ASCII characters, it will be ``unicode``,
-   otherwise ``str``. Isn't it sweet?
+- ``path.join(unicode, unicode)``: ``unicode``
+- ``path.relpath(unicode, unicode)``: ``str`` or ``unicode`` (!!!)
+  If the result contains non-ASCII characters, it will be ``unicode``,
+  otherwise ``str``. Isn't it sweet?
 
-PycUrl
+PyCurl
 ------
 
 PyCurl works solely on ``str``\s.
@@ -207,23 +219,23 @@ PyCurl works solely on ``str``\s.
 Pygit2
 ------
 
- - Config values can be ``unicode``.
- - ``Commit.hex``: ``str``
- - ``Commit.message``: ``unicode``
- - Paths are ``str``. However, this is extrapolated from the fact that
-   ``Patch.delta.{old,new}_file.path`` is ``str``. The API might be
-   inconsistent, so check the thing you're using and add the data here.
- - ``Reference.name``, ``Reference.shorthand``: ``str``
- - However, ``Repository.lookup_reference(unicode)`` works.
- - Refspecs should be ``str``. ``Remote.add_fetch`` doesn't complain when you
-   pass ``unicode``, but ``Remote.fetch_refspecs`` throws an exception if you
-   added a refspec with non-ASCII characters. Funny enough, though,
-   ``Remote.fetch_refspecs`` is an list of ``unicode``.
- - ``Repository(path)`` doesn't work with ``unicode``\s containing non-ASCII
-   characters. To be sure I'd say that all paths passed to Pygit2 methods or
-   the like should be converted to UTF-8 ``str``\s first.
- - ``Signature.name``, ``Signature.email``: ``unicode``. If you need ``str``,
-   you can use ``Signature.raw_name`` and ``Signature.raw_email``.
+- Config values can be ``unicode``.
+- ``Commit.hex``: ``str``
+- ``Commit.message``: ``unicode``
+- Paths are ``str``. However, this is extrapolated from the fact that
+  ``Patch.delta.{old,new}_file.path`` is ``str``. The API might be
+  inconsistent, so check the thing you're using and add the data here.
+- ``Reference.name``, ``Reference.shorthand``: ``str``
+- However, ``Repository.lookup_reference(unicode)`` works.
+- Refspecs should be ``str``. ``Remote.add_fetch`` doesn't complain when you
+  pass ``unicode``, but ``Remote.fetch_refspecs`` throws an exception if you
+  added a refspec with non-ASCII characters. Funny enough, though,
+  ``Remote.fetch_refspecs`` is a list of ``unicode``.
+- ``Repository(path)`` doesn't work with ``unicode``\s containing non-ASCII
+  characters. To be sure I'd say that all paths passed to Pygit2 methods or
+  the like should be converted to UTF-8 ``str``\s first.
+- ``Signature.name``, ``Signature.email``: ``unicode``. If you need ``str``,
+  you can use ``Signature.raw_name`` and ``Signature.raw_email``.
 
 Trivia::
 
@@ -250,21 +262,23 @@ urllib is older, I guess it's the same there.
 Resources (recommended)
 =======================
 
- - https://docs.python.org/2.7/howto/unicode.html
- - https://pythonhosted.org/kitchen/unicode-frustrations.html
- - http://python-future.org/unicode_literals.html
- - the documentation of the mentioned modules or libraries
+- https://docs.python.org/2.7/howto/unicode.html
+- https://pythonhosted.org/kitchen/unicode-frustrations.html
+- http://python-future.org/unicode_literals.html
+- the documentation of the mentioned modules or libraries
 
 Todo (recommended)
 ==================
 
 If you are in an industrious mood, you can help improving this document.
 
- - I marked up many things as ``literal text``. It would be nice if you
-   could change this to interpreted text, such as
-   :meth:`pygit2.Diff.merge`. But you'd also have to find the right way
-   to convert this to HTML, since rst2html doesn't like ``meth`` (as
-   well as the other Python-specific roles, I guess).
+- I marked up many things as ``literal text``. It would be nice if you
+  could change this to interpreted text, such as
+  :meth:`pygit2.Diff.merge`. But you'd also have to find the right way
+  to convert this to HTML, since rst2html doesn't like ``meth`` (as
+  well as the other Python-specific roles, I guess).
+- As stated above, the `notes on which libraries do what`_ are always
+  happy to be updated and extended.
 
 
 License
@@ -277,4 +291,4 @@ Copyright (c) 2015 Richard Möhn
     :target: http://creativecommons.org/by/4.0/
 
 This work is licensed under the `Creative Commons Attribution 4.0
-International License <http://creativecommons.org/licenses/by/4.0/>`.
+International License <http://creativecommons.org/licenses/by/4.0/>`_.
