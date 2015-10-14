@@ -4,6 +4,9 @@ As Short as Possible Guidelines for Handling Unicode in Python 2
 
 »recommended« and »mandatory« are with regard to reading a section.
 
+The Python modules in the repo complement this guide. Feel free to copy
+them into your projects and send improvements.
+
 Conventions (recommended)
 =========================
 
@@ -267,10 +270,11 @@ Resources (recommended)
 - http://python-future.org/unicode_literals.html
 - the documentation of the mentioned modules or libraries
 
-Todo (recommended)
-==================
+Contributing (recommended)
+==========================
 
-If you are in an industrious mood, you can help improving this document.
+If you are in an industrious mood, you can help improving this document
+and the modules.
 
 - I marked up many things as ``literal text``. It would be nice if you
   could change this to interpreted text, such as
