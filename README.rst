@@ -265,3 +265,16 @@ If you are in an industrious mood, you can help improving this document.
    :meth:`pygit2.Diff.merge`. But you'd also have to find the right way
    to convert this to HTML, since rst2html doesn't like ``meth`` (as
    well as the other Python-specific roles, I guess).
+
+
+License
+=======
+
+Copyright (c) 2015 Richard Möhn
+
+.. image:: https://i.creativecommons.org/l/by/4.0/88x31.png
+    :alt: Creative Commons License
+    :target: http://creativecommons.org/by/4.0/
+
+This work is licensed under the `Creative Commons Attribution 4.0
+International License <http://creativecommons.org/licenses/by/4.0/>`.
