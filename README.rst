@@ -28,7 +28,7 @@ Need to Know (mandatory)
     variables inside a program are lists of Unicode characters and we
     want to have the same in Python 2, because we are forward-looking.
 
-❃ every string is ``unicode``
+❃ the ideal: every string is ``unicode``
     Therefore, we assume all string variables inside our programs to be
     of type ``unicode``.
 
@@ -55,8 +55,8 @@ Rules (mandatory)
         from __future__ import unicode_literals
 
     If you don't do this, all string literals in your source code will be
-    ``str``, which is against the »every string is ``unicode``\« of the `Need
-    to Know <#need-to-know-mandatory>`_.
+    ``str``, which is against the »every string is ``unicode``\« ideal of the
+    `Need to Know <#need-to-know-mandatory>`_.
 
 ❃ ``str`` literals
     Use ``b"bla"`` to write a ``str`` "bla".
@@ -68,7 +68,10 @@ Rules (mandatory)
 ❃ naming convention
     If there is a string variable that needs to be of type ``str`` inside
     your program, prefix it with ``b_`` if you don't know the encoding, or
-    with ``utf8_`` if you know it is UTF-8.
+    with ``utf8_`` if you know it is UTF-8::
+
+        b_company_name    = read_company_name_str()
+        utf8_company_name = read_company_name_utf8()
 
 ❃ reading and writing files
     When you want to read from or write to a file, use ``codecs.open()``
@@ -92,8 +95,14 @@ Rules (mandatory)
     having to convert your ``unicode``\s all the time, write at the top
     of every file, but after all imports::
 
+        import sys
+        import codecs
+        # and other imports
+
         if not isinstance(sys.stdout, codecs.StreamWriter):
             sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+
+        # main code follows
 
     (Don't forget to add imports for ``sys`` and ``codecs`` if they
     aren't there already.) This way you can do ``print(unicode)``.
@@ -111,9 +120,9 @@ Rules (mandatory)
     ``str``.
 
 ❃ external libraries
-    Check whether the library calls you're using accept and return ``str`` or
-    ``unicode``. If they accept and return ``str``, take care to make the
-    right conversions. Below are `notes on which libraries do what`_.
+    Check whether the library procedures you're calling accept and return
+    ``str`` or ``unicode``. If they accept and return ``str``, take care to make
+    the right conversions. Below are `notes on which libraries do what`_.
 
 ❃ environment variables
     Use ``unicode_environ.getenv`` and ``unicode_environ.environ`` instead of
@@ -155,7 +164,7 @@ Recommendations (recommended)
 =============================
 
 ❃ UTF-8-encoded source
-    In the first or second line of every Python file, put the following:
+    In the first or second line of every Python file, put the following::
 
         # -*- coding: utf-8 -*-
 
@@ -235,8 +244,8 @@ Pygit2
   added a refspec with non-ASCII characters. Funny enough, though,
   ``Remote.fetch_refspecs`` is a list of ``unicode``.
 - ``Repository(path)`` doesn't work with ``unicode``\s containing non-ASCII
-  characters. To be sure I'd say that all paths passed to Pygit2 methods or
-  the like should be converted to UTF-8 ``str``\s first.
+  characters. In order to be sure, I'd say that all paths passed to Pygit2
+  methods or the like should be converted to UTF-8 ``str``\s first.
 - ``Signature.name``, ``Signature.email``: ``unicode``. If you need ``str``,
   you can use ``Signature.raw_name`` and ``Signature.raw_email``.
 
