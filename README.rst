@@ -171,6 +171,19 @@ Recommendations (recommended)
     Doing this will allow you to use non-ASCII characters in your Python
     source.
 
+❃ unicodification (stringification)
+    Implement ``__unicode__`` and ``__str__`` like this (`credits`__)::
+
+        def __unicode__(self):
+            return … # create unicode representation of your object
+
+
+        def __str__(self):
+            return unicode(self).encode('utf-8')
+
+    __ https://stackoverflow.com/a/1307210/5091738
+
+
 ❃ writing Unicode utilities
     If you want to write utilities like ``unicode_environ`` and
     ``unicode_argparse``, you might find the functions from ``unicode_tools``
