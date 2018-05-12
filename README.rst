@@ -291,6 +291,12 @@ Resources (recommended)
 - https://pythonhosted.org/kitchen/unicode-frustrations.html
 - http://python-future.org/unicode_literals.html
 - the documentation of the mentioned modules or libraries
+- `Joel on Software: The Absolute Minimum Every Software Developer Absolutely,
+  Positively Must Know About Unicode and Character Sets (No Excuses!)`_
+  
+.. _`Joel on Software: The Absolute Minimum Every Software Developer Absolutely,
+  Positively Must Know About Unicode and Character Sets (No Excuses!)`:
+  https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
 
 Contributing (recommended)
 ==========================
